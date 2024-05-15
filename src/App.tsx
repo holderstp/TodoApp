@@ -7,8 +7,10 @@ import Header from "./Components/Header";
 import { ITodoItem } from "./types/todoType";
 import { v4 as uuidv4 } from "uuid";
 import RerenderComponent from "./Components/RerenderComponent";
+import { json } from "stream/consumers";
 
 function App() {
+  const [name, setName] = useState("");
   const [todoList, setTodoList] = useState<ITodoItem[]>([
     {
       id: "1",
@@ -34,6 +36,8 @@ function App() {
       id: uuidv4(),
     };
     setTodoList([...todoList, newTodoItem]);
+    //luu data vao local storage
+    localStorage.setItem("name", JSON.stringify(todoList));
   };
   const handleDel = (id: string) => {
     console.log("in app.tsx", id);
@@ -52,7 +56,24 @@ function App() {
 
   useEffect(() => {
     console.log("todoList -----", todoList);
-  }, [todoList]);
+    const storedName = localStorage.getItem("name");
+    if (storedName) {
+      console.log("day la stored name", JSON.parse(storedName));
+      let reload = JSON.parse(storedName);
+      // Nếu có, khôi phục dữ liệu vào state
+
+      setTodoList(reload);
+    }
+  }, []);
+  // useEffect(() => {
+  //   // Kiểm tra xem có dữ liệu đã lưu trong Local Storage hay không
+  //   const storedName = localStorage.getItem("name");
+  //   if (storedName) {
+  //     // Nếu có, khôi phục dữ liệu vào state
+  //     setName(storedName);
+  //     setTodoList([...todoList,name]);
+  //   }
+  // }, []);
 
   return (
     <div className=" flex-col w-[800px] mx-auto h-[800px]">
